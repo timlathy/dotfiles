@@ -55,6 +55,15 @@ function prettyjson {
   python -m json.tool -
 }
 
+# Example usage: whisper audio.mp3
+function whisper {
+  local filepath="$1"
+  local dir="${filepath%/*}"
+  local filename="${filepath##*/}"
+  [[ "$dir" == "$filepath" ]] && dir="$PWD"
+  docker run -it --rm -v "$dir:/src:z" -w /src --network=none whisper /whisper/bin/whisper --model_dir=/whisper "$filename" "${@:2}"
+}
+
 alias ga="git add"
 alias gs="git status"
 alias gr="git reset"
@@ -174,14 +183,12 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 
 ###
-### asdf
+### Environment
 ###
 
-source $HOME/.asdf/asdf.sh
-source $HOME/.asdf/completions/asdf.bash
-PATH=$PATH:$HOME/.local/bin:$HOME/bin
-PATH=$PATH:$HOME/.cargo/bin:~/.asdf/installs/nodejs/8.12.0/.npm/bin
-PATH=$PATH:~/Android/Sdk/tools:~/Android/Sdk/platform-tools
+# source $HOME/.asdf/asdf.sh
+# source $HOME/.asdf/completions/asdf.bash
+PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/bin
 
 ###
 ### Plugins

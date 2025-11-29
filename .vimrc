@@ -1,7 +1,7 @@
 syntax enable
 
 " Use spaces instead of tabs
-set tabstop=2 softtabstop=0 expandtab shiftwidth=2 smarttab
+set tabstop=2 softtabstop=0 expandtab shiftwidth=2
 
 set number " Show line numbers
 set cursorline " Highlight current line
@@ -26,6 +26,9 @@ set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNO
 " Plugins
 "
 
+" https://github.com/slim-template/vim-slim/issues/19
+let g:polyglot_disabled = ['slim']
+
 source $HOME/.vim/plugins.vim
 
 " onedark.vim
@@ -45,9 +48,6 @@ let g:lightline = {
   \ }
 set laststatus=2
 set noshowmode
-
-" https://github.com/slim-template/vim-slim/issues/19
-let g:polyglot_disabled = ['slim']
 
 " https://github.com/posva/vim-vue/issues/95
 let g:vue_disable_pre_processors = 1
@@ -74,6 +74,9 @@ let mapleader=" "
 " Consistent undo-redo bindings
 nnoremap <Leader>u :u<CR>
 nnoremap <Leader>r <C-r> 
+
+" Alternative for block visual mode
+nnoremap <Leader>v <C-v>
 
 " Clipboard integration
 vmap <Leader>y "+y
