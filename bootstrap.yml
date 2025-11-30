@@ -1,0 +1,205 @@
+---
+- name: Bootstrap Fedora Workstation
+  hosts: localhost
+  connection: local
+
+  vars:
+    system_pkgs:
+      deps: [
+        autoconf, automake, dkms, kernel-devel, binutils-devel, glibc-devel,
+        libffi-devel, unixODBC-devel, openssl-devel,
+        ncurses-devel, gettext-devel, json-glib-devel,
+        flex, flex-devel, bison, bison-devel,
+      ]
+      compilers: [
+        cmake, clang, gcc-c++,
+      ]
+      scripting: [
+        ruby, ruby-devel, python3-devel, nodejs,
+      ]
+      haskell: [
+        stack,
+      ]
+      ocaml: [
+        ocaml, ocaml-ocamldoc, ocaml-merlin, ocaml-findlib, opam,
+      ]
+      editors: [
+        code, vim, vim-X11, fzf, the_silver_searcher, inotify-tools,
+      ]
+      cli: [
+        zsh, git, ripgrep, hyperfine, cloc, httpie, asciinema,
+      ]
+      archivers: [
+        p7zip, p7zip-plugins,
+      ]
+      containers: [
+        podman, podman-docker,
+      ]
+      wine: [
+        wine, winetricks,
+      ]
+      graphics: [
+        ImageMagick, inkscape, krita, blender,
+      ]
+      video: [
+        ffmpeg, mpv, vlc,
+      ]
+      ocr: [
+        ocrmypdf, tesseract-langpack-rus,
+      ]
+      texlive: [
+        texlive, texlive-xetex, texlive-biblatex, texlive-cm-unicode,
+        texlive-biblatex-gost, texlive-babel-russian, texlive-hyphen-russian,
+        texlive-wrapfig, texlive-floatrow, texlive-adjustbox, texlive-upquote,
+        texlive-ulem, texlive-multirow, texlive-pythontex, texlive-epstopdf,
+        texlive-fontawesome, texlive-tcolorbox, texlive-dashrule, texlive-xurl,
+        texlive-textpos, texlive-isodate, texlive-csvsimple, texlive-minted,
+        texlive-makecell, texlive-tocloft, texlive-hyphenat,
+      ]
+
+    user_flatpaks:
+      graphics:
+        - com.github.finefindus.eyedropper
+      music:
+        - com.spotify.Client
+      notes:
+        - md.obsidian.Obsidian
+        - net.mkiol.SpeechNote
+      system:
+        - net.nokyan.Resources
+
+    gnome_settings:
+      # Desktop
+      "/org/gnome/desktop/background/show-desktop-icons": "false"
+      # Top bar
+      "/org/gnome/desktop/interface/clock-format": "'12h'"
+      "/org/gnome/desktop/interface/clock-show-date": "true"
+      "/org/gnome/desktop/interface/clock-show-weekday": "true"
+      "/org/gnome/desktop/interface/show-battery-percentage": "true"
+      # Fonts
+      "/org/gnome/desktop/interface/font-name": "'Fira Sans 12'"
+      "/org/gnome/desktop/interface/monospace-font-name": "'Fira Mono 12'"
+      "/org/gnome/desktop/wm/preferences/titlebar-font": "'Fira Sans Bold 12'"
+      # Windows
+      "/org/gnome/desktop/wm/preferences/button-layout": "'appmenu:minimize,maximize,close'"
+      # Keyboard
+      "/org/gnome/desktop/input-sources/sources": "[('xkb', 'us'), ('xkb', 'ru')]"
+      "/org/gnome/desktop/input-sources/xkb-options": "['caps:swapescape', 'grp:alt_shift_toggle', 'compose:ralt']"
+      # Terminal
+      "/org/gnome/Ptyxis/Shortcuts/move-next-tab": "'<Shift><Control>Right'"
+      "/org/gnome/Ptyxis/Shortcuts/move-previous-tab": "'<Shift><Control>Left'"
+      "/org/gnome/Ptyxis/Profiles/313af6a9d7d3827eada3b6c07151129f/label": "'Ptyxis Custom Profile'"
+      "/org/gnome/Ptyxis/Profiles/313af6a9d7d3827eada3b6c07151129f/palette": "'Ptyxis Custom Theme'"
+      "/org/gnome/Ptyxis/Profiles/313af6a9d7d3827eada3b6c07151129f/limit-scrollback": "false"
+      "/org/gnome/Ptyxis/default-profile-uuid": "'313af6a9d7d3827eada3b6c07151129f'"
+      "/org/gnome/Ptyxis/profile-uuids": "['313af6a9d7d3827eada3b6c07151129f']"
+      "/org/gnome/Ptyxis/font-name": "'Fira Mono 14'"
+      "/org/gnome/Ptyxis/audible-bell": "false"
+
+  tasks:
+    - name: Import RPM Fusion GPG keys
+      become: true
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ item }}"
+      with_items:
+        - "https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-2020"
+        - "https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"
+
+    - name: Enable RPM Fusion repositories
+      become: true
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+        - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm"
+
+    - name: Enable Visual Studio Code repository
+      become: true
+      yum_repository:
+        name: vscode
+        description: Visual Studio Code
+        baseurl: "https://packages.microsoft.com/yumrepos/vscode"
+        gpgcheck: yes
+        gpgkey: "https://packages.microsoft.com/keys/microsoft.asc"
+
+    - name: Install system-wide packages
+      become: true
+      dnf:
+        name: "{{ system_pkgs.values() | list | flatten }}"
+        update_cache: yes
+        state: present
+
+    - name: Install user Flatpak packages
+      become: false
+      community.general.flatpak:
+        name: "{{ user_flatpaks.values() | list | flatten }}"
+        state: present
+        remote: flathub
+
+    - name: Install zsh-autosuggestions
+      become: false
+      ansible.builtin.git:
+        repo: "https://github.com/zsh-users/zsh-autosuggestions"
+        dest: "~/.zsh/zsh-autosuggestions"
+        version: "v0.6.4"
+
+    - name: Install zsh-completions
+      become: false
+      ansible.builtin.git:
+        repo: "https://github.com/zsh-users/zsh-completions"
+        dest: "~/.zsh/zsh-completions"
+        version: "0.35.0"
+
+    - name: Change user shell to zsh
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: "/usr/bin/zsh"
+
+    - name: Create user fonts directory
+      become: false
+      ansible.builtin.file:
+        path: "~/.local/share/fonts"
+        state: directory
+        mode: "0755"
+
+    - name: Install Mozilla Fira fonts
+      become: false
+      ansible.builtin.unarchive:
+        src: "https://github.com/mozilla/Fira/archive/4.202.tar.gz"
+        dest: "~/.local/share/fonts"
+        remote_src: yes
+        creates: "~/.local/share/fonts/FiraSans-Regular.ttf"
+        extra_opts: ["--strip-components=2", "--wildcards", "Fira-4.202/ttf/*.ttf"]
+      notify:
+      - Refresh font cache
+
+    - name: Create user terminal themes directory
+      become: false
+      ansible.builtin.file:
+        path: "~/.local/share/org.gnome.Ptyxis/palettes/"
+        state: directory
+        mode: "0755"
+
+    - name: Install user terminal theme
+      become: false
+      ansible.builtin.copy:
+        src: "bootstrap/Ptyxis Custom Theme.palette"
+        dest: "~/.local/share/org.gnome.Ptyxis/palettes/"
+        mode: "0644"
+
+    - name: Apply desktop environment settings
+      become: false
+      community.general.dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value | string }}"
+        state: present
+      with_items:
+      - "{{ gnome_settings | dict2items }}"
+
+  handlers:
+    - name: Refresh font cache
+      become: false
+      command: fc-cache -f

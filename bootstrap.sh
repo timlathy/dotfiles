@@ -1,19 +1,5 @@
 #!/bin/bash
 
-# Install base dependencies
-sudo dnf -y install autoconf automake git zsh
-
-# Add RPM Fusion repositories
-sudo dnf -y install --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf -y install --nogpgcheck http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-
-# Fetch the rest of the scripts
-mkdir -p ~/git
-cd ~/git
-
-git clone https://github.com/thymelous/dotfiles.git
-cd dotfiles
-
 # Link dotfiles
 mv ~/.bashrc ~/.bashrc.old
 ln -s `pwd`/.bashrc ~/.bashrc
@@ -43,6 +29,7 @@ mkdir -p ~/.config/Code/User
 ln -s `pwd`/vscode/settings.json ~/.config/Code/User/settings.json
 ln -s `pwd`/vscode/keybindings.json ~/.config/Code/User/keybindings.json
 
-# Continue installation
-cd system
-run-parts .
+# Run Ansible
+sudo dnf install -y ansible
+ansible-galaxy collection install community.general
+ansible-playbook bootstrap.yml -v --ask-become-pass
