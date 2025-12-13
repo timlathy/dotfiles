@@ -71,20 +71,20 @@
     gnome_settings:
       # Desktop
       "/org/gnome/desktop/background/show-desktop-icons": "false"
-      # Top bar
       "/org/gnome/desktop/interface/clock-format": "'12h'"
       "/org/gnome/desktop/interface/clock-show-date": "true"
       "/org/gnome/desktop/interface/clock-show-weekday": "true"
       "/org/gnome/desktop/interface/show-battery-percentage": "true"
-      # Fonts
-      "/org/gnome/desktop/interface/font-name": "'Fira Sans 12'"
-      "/org/gnome/desktop/interface/monospace-font-name": "'Fira Mono 12'"
-      "/org/gnome/desktop/wm/preferences/titlebar-font": "'Fira Sans Bold 12'"
-      # Windows
       "/org/gnome/desktop/wm/preferences/button-layout": "'appmenu:minimize,maximize,close'"
       # Keyboard
       "/org/gnome/desktop/input-sources/sources": "[('xkb', 'us'), ('xkb', 'ru')]"
       "/org/gnome/desktop/input-sources/xkb-options": "['caps:swapescape', 'grp:alt_shift_toggle', 'compose:ralt']"
+      # Fonts
+      "/org/gnome/desktop/interface/font-name": "'Fira Sans 12'"
+      "/org/gnome/desktop/interface/monospace-font-name": "'Fira Mono 12'"
+      "/org/gnome/desktop/wm/preferences/titlebar-font": "'Fira Sans Bold 12'"
+      # Theme
+      "/org/gnome/shell/extensions/user-theme/name": "'Custom-Theme'"
       # Terminal
       "/org/gnome/Ptyxis/Shortcuts/move-next-tab": "'<Shift><Control>Right'"
       "/org/gnome/Ptyxis/Shortcuts/move-previous-tab": "'<Shift><Control>Left'"
@@ -182,7 +182,21 @@
       notify:
       - Refresh font cache
 
-    - name: Create user terminal themes directory
+    - name: Create user desktop environment theme directory
+      become: false
+      ansible.builtin.file:
+        dest: "~/.local/share/themes/Custom-Theme/gnome-shell/"
+        state: directory
+        mode: "0755"
+
+    - name: Install user desktop environment theme
+      become: false
+      ansible.builtin.copy:
+        src: "bootstrap/gnome-shell.css"
+        dest: "~/.local/share/themes/Custom-Theme/gnome-shell/"
+        mode: "0644"
+
+    - name: Create user terminal theme directory
       become: false
       ansible.builtin.file:
         path: "~/.local/share/org.gnome.Ptyxis/palettes/"

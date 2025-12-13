@@ -1,0 +1,231 @@
+/* Minimal changes to the Adwaita shell theme that update the colors
+ * to those inspired by Arc-Dark (https://github.com/jnsh/arc-theme) */
+
+/* Top bar */
+
+#panel {
+  background-color: #2f343f;
+  color: #d3dae3;
+}
+
+#panel .panel-button:hover,
+#panel .panel-button:active,
+#panel .panel-button:hover.clock-display .clock,
+#panel .panel-button:active.clock-display .clock {
+  background-color: #4f5666;
+}
+
+/* Alt-Tab */
+
+.switcher-list {
+  background-color: #2f343f;
+  color: #d3dae3;
+}
+
+.switcher-list .item-box:outlined,
+.switcher-list .item-box:selected {
+  background-color: #4f5666;
+}
+
+/* Overview */
+
+#panel:overview,
+#overviewGroup {
+  background-color: #252a35;
+}
+
+.workspace-thumbnails .workspace-thumbnail,
+#dash .dash-background {
+  background-color: #444a58;
+}
+
+.window-close,
+.search-entry,
+StEntry {
+  background-color: #444a58;
+  color: #d3dae3;
+  font-weight: bold;
+}
+
+.window-close:hover,
+.search-entry:focus,
+StEntry:focus {
+  background-color: #4f5666;
+  color: #e6eaef;
+}
+
+.app-folder,
+.app-folder-dialog,
+.page-navigation-arrow,
+.search-section-content,
+.overview-tile:selected,
+#dash .dash-item-container .show-apps .overview-icon,
+#dash .dash-item-container .overview-tile .overview-icon,
+#dash .dash-item-container .grid-search-result .overview-icon {
+  background-color: #444a58;
+  color: #d3dae3;
+}
+
+.quick-settings .icon-button .app-folder:hover,
+.page-navigation-arrow:hover,
+.list-search-result:hover,
+.list-search-result:selected,
+.search-provider-icon:hover,
+.overview-tile:hover,
+#dash .dash-item-container .show-apps:hover .overview-icon,
+#dash .dash-item-container .overview-tile:hover .overview-icon,
+#dash .dash-item-container .grid-search-result:hover .overview-icon {
+  background-color: #4f5666;
+  color: #e6eaef;
+}
+
+.list-search-result-title {
+  color: #d3dae3;
+  font-weight: bold;
+}
+
+.list-search-result-description {
+  color: #d3dae3;
+}
+
+/* Menus */
+
+.popup-menu .popup-menu-item:focus,
+.popup-menu .popup-menu-item:hover,
+.popup-menu .popup-menu-item.selected {
+  background-color: #4f5666;
+  color: #e6eaef;
+}
+
+/* Top bar elements */
+
+.quick-settings,
+.unlock-dialog-notifications-container .notification,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source,
+.popup-menu-content,
+.candidate-popup-content,
+.notification-banner,
+.notification-banner:hover,
+.notification-banner:focus {
+  background-color: #383c4a;
+  color: #d3dae3;
+}
+
+.quick-toggle-menu {
+  background-color: #383c4a !important;
+  color: #d3dae3 !important;
+  border-color: #2b2e39;
+}
+
+.quick-settings .button,
+.quick-settings .icon-button,
+.quick-settings .message-notification-group .message-collapse-button,
+.message-notification-group .quick-settings .message-collapse-button,
+.quick-settings .message .message-header .message-expand-button,
+.message .message-header .quick-settings .message-expand-button,
+.quick-settings .message .message-header .message-close-button,
+.message .message-header .quick-settings .message-close-button {
+  background-color: #444a58;
+}
+
+.quick-settings .button:hover,
+.quick-settings .icon-button:hover,
+.quick-settings .message-notification-group .message-collapse-button:hover,
+.message-notification-group .quick-settings .message-collapse-button:hover,
+.quick-settings .message .message-header .message-expand-button:hover,
+.message .message-header .quick-settings .message-expand-button:hover,
+.quick-settings .message .message-header .message-close-button:hover,
+.message .message-header .quick-settings .message-close-button:hover {
+  background-color: #4f5666;
+}
+
+.quick-toggle,
+.quick-toggle-has-menu .quick-toggle-menu-button {
+  background-color: #444a58;
+}
+
+.quick-toggle-has-menu .quick-toggle-separator {
+  background-color: #2f343f;
+}
+
+.quick-toggle:hover,
+.quick-toggle-has-menu .quick-toggle-menu-button:hover {
+  background-color: #4f5666;
+}
+
+.quick-toggle:checked,
+.quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #2190a4;
+}
+
+.quick-toggle:checked:hover,
+.quick-toggle-has-menu .quick-toggle-menu-button:checked:hover {
+  background-color: #249eb4;
+}
+
+.quick-toggle-menu .popup-menu-item:focus,
+.quick-toggle-menu .popup-menu-item:hover,
+.quick-toggle-menu .popup-menu-item.selected {
+  background-color: #4f5666;
+  color: #e6eaef;
+}
+
+.calendar .pager-button,
+.calendar .calendar-day,
+.world-clocks-button,
+.weather-button,
+.events-button,
+.message-list-clear-button,
+.message-list-expand-button {
+  background-color: #444a58;
+  color: #d3dae3;
+}
+
+.calendar .pager-button:hover,
+.calendar .pager-button:focus,
+.calendar .calendar-day:hover,
+.calendar .calendar-day:focus,
+.world-clocks-button:hover,
+.world-clocks-button:focus,
+.weather-button:hover,
+.weather-button:focus,
+.events-button:hover,
+.events-button:focus,
+.message-list-clear-button:hover,
+.message-list-clear-button:focus,
+.message-list-expand-button:hover,
+.message-list-expand-button:focus {
+  background-color: #4f5666;
+}
+
+.calendar .calendar-day:active,
+.calendar .calendar-day:selected {
+  background-color: #2190a4;
+}
+
+.calendar .calendar-day:active:hover,
+.calendar .calendar-day:selected:hover {
+  background-color: #249eb4;
+}
+
+.calendar .calendar-month-label,
+.calendar .calendar-day-heading {
+  background-color: transparent;
+  color: #d3dae3;
+}
+
+/* Notifications */
+
+.notification,
+.notification-banner,
+.message {
+  background-color: #444a58;
+  color: #d3dae3;
+}
+
+.notification:hover,
+.notification-banner:hover,
+.message:hover {
+  background-color: #4f5666;
+  color: #d3dae3;
+}
