@@ -190,6 +190,9 @@ zle -N zle-keymap-select
 # source $HOME/.asdf/completions/asdf.bash
 PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/bin
 
+VISUAL=vim
+EDITOR=$VISUAL
+
 ###
 ### Plugins
 ###
