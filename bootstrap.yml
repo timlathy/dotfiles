@@ -27,7 +27,7 @@
         code, vim, vim-X11, fzf, the_silver_searcher, inotify-tools,
       ]
       cli: [
-        zsh, git, ripgrep, hyperfine, cloc, httpie, asciinema,
+        zsh, git, ripgrep, moreutils, jq, hyperfine, cloc, httpie, asciinema,
       ]
       archivers: [
         p7zip, p7zip-plugins,
@@ -95,6 +95,12 @@
       "/org/gnome/Ptyxis/profile-uuids": "['313af6a9d7d3827eada3b6c07151129f']"
       "/org/gnome/Ptyxis/font-name": "'Fira Mono 14'"
       "/org/gnome/Ptyxis/audible-bell": "false"
+
+    gnome_extensions:
+      "appindicatorsupport@rgcjonas.gmail.com": "appindicatorsupportrgcjonas.gmail.com.v61"
+      "instantworkspaceswitcher@amalantony.net": "instantworkspaceswitcheramalantony.net.v10"
+      "unlockDialogBackground@sun.wxg@gmail.com": "unlockDialogBackgroundsun.wxggmail.com.v39"
+      "simple-weather@romanlefler.com": "simple-weatherromanlefler.com.v5"
 
   tasks:
     - name: Import RPM Fusion GPG keys
@@ -190,7 +196,7 @@
         dest: "~/.local/share/org.gnome.Ptyxis/palettes/"
         mode: "0644"
 
-    - name: Apply desktop environment settings
+    - name: Apply user desktop environment settings
       become: false
       community.general.dconf:
         key: "{{ item.key }}"
@@ -198,6 +204,44 @@
         state: present
       with_items:
       - "{{ gnome_settings | dict2items }}"
+
+    - name: List user desktop environment extensions
+      become: false
+      changed_when: false
+      failed_when: false
+      shell: "gnome-extensions show {{ item.key }} | rg Enabled"
+      register: gnome_extensions_enabled
+      with_items:
+      - "{{ gnome_extensions | dict2items }}"
+
+    - name: Download missing desktop environment extensions
+      become: false
+      when: item.rc != 0
+      get_url:
+        url: "https://extensions.gnome.org/extension-data/{{ item.item.value }}.shell-extension.zip"
+        dest: "/tmp/{{ item.item.value }}.zip"
+      with_items:
+      - "{{ gnome_extensions_enabled.results }}"
+
+    - name: Fixup desktop environment extension metadata
+      become: false
+      when: item.rc != 0
+      shell: >
+        unzip -o {{ item.item.value }}.zip metadata.json &&
+        jq '."shell-version"=["'`gnome-shell --version | rg -o '(\d+)' | head -1`'"]' metadata.json |
+        sponge metadata.json && zip {{ item.item.value }}.zip metadata.json
+      args:
+        executable: /usr/bin/zsh
+        chdir: /tmp
+      with_items:
+      - "{{ gnome_extensions_enabled.results }}"
+
+    - name: Install user desktop environment extensions
+      become: false
+      when: item.rc != 0
+      command: "gnome-extensions install -f /tmp/{{ item.item.value }}.zip"
+      with_items:
+      - "{{ gnome_extensions_enabled.results }}"
 
   handlers:
     - name: Refresh font cache
