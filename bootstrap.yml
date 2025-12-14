@@ -38,11 +38,14 @@
       wine: [
         wine, winetricks,
       ]
+      desktop: [
+        gnome-tweaks, gnome-extensions-app,
+      ]
       graphics: [
         ImageMagick, inkscape, krita, blender,
       ]
-      video: [
-        ffmpeg, mpv, vlc,
+      media: [
+        ffmpeg, vlc, rhythmbox,
       ]
       ocr: [
         ocrmypdf, tesseract-langpack-rus,
@@ -76,14 +79,21 @@
       "/org/gnome/desktop/interface/clock-show-weekday": "true"
       "/org/gnome/desktop/interface/show-battery-percentage": "true"
       "/org/gnome/desktop/wm/preferences/button-layout": "'appmenu:minimize,maximize,close'"
+      "/org/gnome/shell/app-switcher/current-workspace-only": "true"
       # Keyboard
       "/org/gnome/desktop/input-sources/sources": "[('xkb', 'us'), ('xkb', 'ru')]"
       "/org/gnome/desktop/input-sources/xkb-options": "['caps:swapescape', 'grp:alt_shift_toggle', 'compose:ralt']"
-      # Fonts
+      # Shortcuts
+      "/org/gnome/desktop/wm/keybindings/switch-applications": "['<Super>Tab']"
+      "/org/gnome/desktop/wm/keybindings/switch-applications-backward": "['<Shift><Super>Tab']"
+      "/org/gnome/desktop/wm/keybindings/switch-windows": "['<Alt>Tab']"
+      "/org/gnome/desktop/wm/keybindings/switch-windows-backward": "['<Shift><Alt>Tab']"
+      "/org/gnome/shell/keybindings/toggle-quick-settings": "[]"
+      "/org/gnome/shell/keybindings/screenshot": "['<Super>s']"
+      # Theming
       "/org/gnome/desktop/interface/font-name": "'Fira Sans 12'"
       "/org/gnome/desktop/interface/monospace-font-name": "'Fira Mono 12'"
       "/org/gnome/desktop/wm/preferences/titlebar-font": "'Fira Sans Bold 12'"
-      # Theme
       "/org/gnome/shell/extensions/user-theme/name": "'Custom-Theme'"
       # Terminal
       "/org/gnome/Ptyxis/Shortcuts/move-next-tab": "'<Shift><Control>Right'"
@@ -135,6 +145,15 @@
       dnf:
         name: "{{ system_pkgs.values() | list | flatten }}"
         update_cache: yes
+        allowerasing: yes
+        state: present
+
+    - name: Enable Flatpak repository
+      become: true
+      community.general.flatpak_remote:
+        name: flathub
+        flatpakrepo_url: "https://dl.flathub.org/repo/flathub.flatpakrepo"
+        method: system
         state: present
 
     - name: Install user Flatpak packages
@@ -256,6 +275,27 @@
       command: "gnome-extensions install -f /tmp/{{ item.item.value }}.zip"
       with_items:
       - "{{ gnome_extensions_enabled.results }}"
+
+    - name: Create user wallpapers directory
+      become: false
+      ansible.builtin.file:
+        path: "~/Pictures/Wallpapers/"
+        state: directory
+        mode: "0755"
+
+    - name: Install user lock screen background switch script
+      become: false
+      ansible.builtin.copy:
+        src: "bootstrap/switch-lock-screen-bg.sh"
+        dest: "~/Pictures/Wallpapers/"
+        mode: "0755"
+
+    - name: Schedule periodic user lock screen background switch
+      become: false
+      ansible.builtin.cron:
+        name: "switch-lock-screen-bg"
+        job: "{{ ansible_env.HOME }}/Pictures/Wallpapers/switch-lock-screen-bg.sh"
+        minute: "*/15"
 
   handlers:
     - name: Refresh font cache

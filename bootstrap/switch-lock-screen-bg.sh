@@ -1,11 +1,10 @@
 #!/usr/bin/env sh
 
 # Requires https://github.com/sunwxg/gnome-shell-extension-unlockDialogBackground
-# on GNOME 3.36
 
 # Example usage:
 # crontab -e
-# */15 * * * * /path/to/alternate-lock-screen-bg.sh
+# */15 * * * * /path/to/switch-lock-screen-bg.sh
 
 WALLPAPER_DIR=~/Pictures/Wallpapers
 LRU_WALLPAPER="$WALLPAPER_DIR/$(ls -tr $WALLPAPER_DIR | grep -E "(png|jpg)$" | head -n 1)"
