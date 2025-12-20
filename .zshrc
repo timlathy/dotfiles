@@ -2,6 +2,9 @@
 ### Aliases
 ###
 
+alias evince="papers" # Replacement PDF document viewer in newer GNOME
+alias eog="loupe" # Replacement image viewer in newer GNOME
+
 alias vim="vimx" # vim with clipboard support
 alias yt="mpsyt"
 alias jup="stack --resolver lts-14.17 exec jupyter -- notebook"
