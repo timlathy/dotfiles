@@ -39,7 +39,7 @@
         wine, winetricks,
       ]
       desktop: [
-        gnome-tweaks, gnome-extensions-app,
+        gnome-tweaks,
       ]
       graphics: [
         ImageMagick, inkscape, krita, blender,
@@ -69,6 +69,7 @@
         - md.obsidian.Obsidian
         - net.mkiol.SpeechNote
       system:
+        - com.mattjakeman.ExtensionManager
         - net.nokyan.Resources
 
     gnome_settings:
